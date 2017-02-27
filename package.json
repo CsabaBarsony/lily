@@ -1,0 +1,34 @@
+{
+  "name": "lily",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "browserify -t [ babelify --presets [ react ] ] src/pages/calculator.js -o public/js/calculator.js -d",
+    "watch": "watchify -t [ babelify --presets [ react ] ] src/pages/calculator.js -o public/js/calculator.js -d"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.1",
+    "express": "^4.14.0",
+    "fs-extra": "^0.30.0",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.5.0",
+    "karma-browserify": "^5.1.1",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-react-jsx-preprocessor": "^0.1.1",
+    "mysql": "^2.12.0",
+    "react": "^15.4.2",
+    "react-addons-test-utils": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-tools": "^0.13.3",
+    "reactify": "^1.1.1",
+    "watchify": "^3.9.0"
+  }
+}
