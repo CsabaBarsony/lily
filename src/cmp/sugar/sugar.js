@@ -1,8 +1,9 @@
-const React = require('react');
-const PubSub = require('pubsub-js');
-const Statechart = require('scion-core').Statechart;
+const React = require('react')
+const PubSub = require('pubsub-js')
+const Statechart = require('scion-core').Statechart
+const bella = require('../../bella.js')
 
-let sc;
+let sc
 
 const Sugar = React.createClass({
     getInitialState: function() {
@@ -10,9 +11,11 @@ const Sugar = React.createClass({
             loading: false,
             selectedIndex: -1,
             suggestions: []
-        };
+        }
     },
     componentDidMount: function() {
+        const self = this
+
         const actions = {
             focus: {
                 entry: e => {
@@ -28,21 +31,27 @@ const Sugar = React.createClass({
                 entry: e => {
 
                 },
-                exit: e => {
-
+                exit: () => {
+                    self.setState({
+                        loading: false,
+                        suggestions: []
+                    })
                 }
             },
             loading: {
                 entry: e => {
-
+                    self.setState({ loading: true })
+                    bella.ajax.get(e.data, function(suggestions) {
+                        sc.gen('load', suggestions)
+                    })
                 },
-                exit: e => {
-
+                exit: () => {
+                    self.setState({ loading: false })
                 }
             },
             suggesting: {
                 entry: e => {
-
+                    self.setState({ suggestions: e.data })
                 }
             },
             excited: {
@@ -55,7 +64,7 @@ const Sugar = React.createClass({
 
                 }
             }
-        };
+        }
 
         const states = [
             {
@@ -167,23 +176,54 @@ const Sugar = React.createClass({
                     }
                 ]
             }
-        ];
+        ]
 
-        sc = new Statechart({ states: states }, { logStatesEnteredAndExited: true });
-        sc.start();
+        sc = new Statechart({ states: states }, { logStatesEnteredAndExited: false })
+        sc.start()
     },
     render: function () {
+        let content;
+
+        if(this.state.loading) {
+            content = <div>loading...</div>
+        }
+        else {
+            const suggestionItems = this.state.loading ? <li>loading...</li> : this.state.suggestions.map((suggestion, i) => {
+                return <li key={i}>{suggestion.name}</li>
+            })
+
+            content = <ul>{suggestionItems}</ul>
+        }
+
         return (
             <div>
-                <input type="text" onFocus={this.onFocus} onChange={this.onChange} />
-            </div>);
+                <input
+                    type="text"
+                    onFocus={this.onFocus}
+                    onChange={this.onChange}
+                    onKeyDown={this.onKeyDown}
+                    onKeyPress={this.onKeyPress} />
+                {content}
+            </div>)
     },
     onFocus: function() {
-        sc.gen('select');
+        sc.gen('select')
     },
     onChange: function(e) {
-        console.log('change', e.target.value);
-    }
-});
+        if(e.target.value === '') sc.gen('clear')
+        else sc.gen('type', e.target.value)
+    },
+    onKeyDown: function(e) {
+        if(e.key === 'ArrowUp') {
 
-module.exports = Sugar;
+        }
+        else if(e.key === 'ArrowDown') {
+
+        }
+        else if(e.key === 'Enter') {
+
+        }
+    }
+})
+
+module.exports = Sugar
