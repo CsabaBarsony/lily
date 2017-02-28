@@ -1,12 +1,13 @@
 const Sugar = require('./sugar.js');
 const React = require('react');
-const renderer = require('react-addons-test-utils').createRenderer();
+const TestUtils = require('react-addons-test-utils');
+const renderer = TestUtils.createRenderer();
 
-describe('Sugar', function() {
+describe('Calculator', function() {
     renderer.render(<Sugar message="Csati majom" />);
     const result = renderer.getRenderOutput();
 
     it('should...', function() {
-        expect(result.type).toBe('input');
+        expect(result.type).toBe('div');
     });
 });
